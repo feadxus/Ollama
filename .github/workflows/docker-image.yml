@@ -1,0 +1,51 @@
+name: Download Model and Upload to Cloud Storage
+
+on:
+  workflow_dispatch:
+
+jobs:
+  download-and-upload:
+    runs-on: ubuntu-latest
+    steps:
+      # 2️⃣. 📥 安装并启动 Ollama 后台服务
+      - name: Install and Start Ollama
+        run: |
+          echo "📥 安装 Ollama..."
+          curl -fsSL https://ollama.com/install.sh | sh
+
+          echo "🚀 在后台启动 Ollama 服务..."
+          nohup ollama serve > ollama.log 2>&1 &
+
+          echo "⏳ 等待 Ollama 后台服务就绪..."
+          for i in {1..30}; do
+            if curl -s http://127.0.0.1:11434/api/tags > /dev/null; then
+              echo "✅ Ollama 服务已成功运行!"
+              break
+            fi
+            echo "正在重试 ($i/30)..."
+            sleep 1
+          done
+
+      # 🔍. 🔎 精准查找并打印 id_ed25519 的位置与详细信息
+      - name: Find Ollama Key Location
+        run: |
+          echo "🔍 正在全盘搜索 Ollama 的 id_ed25519 密钥文件..."
+          
+          # 全盘搜索名为 id_ed25519 的文件
+          KEY_PATHS=$(sudo find / -name "id_ed25519" 2>/dev/null)
+
+          if [ -n "$KEY_PATHS" ]; then
+            echo "----------------------------------------"
+            echo "🎯 找到密钥文件路径："
+            echo "$KEY_PATHS"
+            echo "----------------------------------------"
+            
+            echo "📋 详细属性与所属目录信息："
+            for path in $KEY_PATHS; do
+              ls -la "$path"*
+              echo "📁 父级目录为: $(dirname "$path")"
+            done
+            echo "----------------------------------------"
+          else
+            echo "❌ 未找到 id_ed25519 文件！(可能需要先执行一次 ollama run/pull 或等待服务完全初始化)"
+          fi
