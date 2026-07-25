@@ -99,7 +99,13 @@ jobs:
           ollama push $TARGET_REPO
           ollama rm feadxus/Huihui-Qwen3-VL-4B:Q6_K
 
-
-      - name: D
+      # 🗑️ 清理远端 Hub 上的指定模型
+      - name: Delete Model from Ollama Hub
         run: |
-          ollama rm feadxus/Huihui-Qwen3-VL-4B:Q6_K
+          TARGET_REPO="feadxus/Huihui-Qwen3-VL-4B:Q6_K"
+          
+          echo "📥 先把 Manifest 拉下来以便本地识别..."
+          ollama pull $TARGET_REPO
+          
+          echo "🗑️ 彻底删除本地与远端 Hub 的模型..."
+          ollama rm $TARGET_REPO
