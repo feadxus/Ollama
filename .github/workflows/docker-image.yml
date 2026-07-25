@@ -10,8 +10,8 @@ jobs:
     # 🎯 全局共享变量:只在这里定义一次,后续所有 Step 统统通用!
     env:
       USERNAME: "feadxus"
-      LONG_NAME: "hf.co/noctrex/Huihui-Qwen3-VL-4B-Instruct-abliterated-GGUF:Q6_K"
-      SHORT_NAME: "Huihui-Qwen3-VL-4B:Q6_K"
+      LONG_NAME: "hf.co/BennyDaBall/Qwen3-4b-Z-Image-Turbo-AbliteratedV1:Q3_K_M"
+      SHORT_NAME: "Qwen3-4b-Z-Image-Turbo-AbliteratedV1:Q3_K_M"
 
     steps:
       # 1️⃣. 安装 Ollama
@@ -98,14 +98,3 @@ jobs:
           echo "🚀 正在推送模型到个人 Hub: $TARGET_REPO ..."
           ollama push $TARGET_REPO
           ollama rm feadxus/Huihui-Qwen3-VL-4B:Q6_K
-
-      # 🗑️ 清理远端 Hub 上的指定模型
-      - name: Delete Model from Ollama Hub
-        run: |
-          TARGET_REPO="feadxus/Huihui-Qwen3-VL-4B:Q6_K"
-          
-          echo "📥 先把 Manifest 拉下来以便本地识别..."
-          ollama pull $TARGET_REPO
-          
-          echo "🗑️ 彻底删除本地与远端 Hub 的模型..."
-          ollama rm $TARGET_REPO
