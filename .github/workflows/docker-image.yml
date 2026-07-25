@@ -62,15 +62,15 @@ jobs:
       - name: Pull Model from HF
         run: |
           # 在 Bash 里动态拼装完整的 LONG_NAME
-          LONG_NAME="${DOMAIN}/${HF_MODEL}:${FILE_TAG}"
+          LONG_NAME="${DOMAIN}/${HF_MODEL}"
           echo "📥 正在拉取: $LONG_NAME ..."
           ollama pull $LONG_NAME
 
       # 5️⃣. 🏷️ 重命名并准备个人仓库 Tag
       - name: Rename Model Tag
         run: |
-          LONG_NAME="${DOMAIN}/${HF_MODEL}:${FILE_TAG}"
-          TARGET_REPO="${USERNAME}/${SHORT_NAME}"
+          LONG_NAME="${DOMAIN}/${HF_MODEL}"
+          TARGET_REPO="${USERNAME}/${FILE_TAG}"
           echo "🏷️ 复制模型为简短标签: $TARGET_REPO ..."
           ollama cp $LONG_NAME $TARGET_REPO
 
