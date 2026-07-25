@@ -6,15 +6,46 @@ on:
 jobs:
   download-and-upload:
     runs-on: ubuntu-latest
-    
-    # 🎯 全局共享变量:只在这里定义一次,后续所有 Step 统统通用!
-    env:
-      USERNAME: "feadxus"
-      DOMAIN: "huggingface.co"
-      HF_MODEL: "ponpoke/flux2-klein-9b-uncensored-text-encoder:flux2-klein-9b-uncensored-f16.gguf"
-      FILE_TAG: "flux2-klein-9b-uncensored:F16"
-
     steps:
+      # ====================================================================
+      # 腾出空间!通过卸载不需要的 Android、.NET 等工具,释放出约 30GB+ 空间
+      # ====================================================================
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap: true
+
+      - name: 查看清理前磁盘空间
+        run: df -h /
+
+      - name: 删除 .NET SDK(/usr/share/dotnet)
+        run: sudo rm -rf /usr/share/dotnet
+      - name: 删除 Android SDK(/usr/local/lib/android)
+        run: sudo rm -rf /usr/local/lib/android
+      - name: 删除语言工具缓存(/opt/hostedtoolcache)
+        run: sudo rm -rf /opt/hostedtoolcache
+      - name: 删除 PowerShell(/usr/local/share/powershell)
+        run: sudo rm -rf /usr/local/share/powershell
+      - name: 删除 Chromium(/usr/local/share/chromium)
+        run: sudo rm -rf /usr/local/share/chromium
+      - name: 删除 Swift 工具链(/usr/share/swift)
+        run: sudo rm -rf /usr/share/swift
+      - name: 删除 Java JDK(/usr/lib/jvm)
+        run: sudo rm -rf /usr/lib/jvm
+      - name: 删除 Azure CLI 工具(/opt/az)
+        run: sudo rm -rf /opt/az
+      - name: 删除微软工具链(/opt/microsoft)
+        run: sudo rm -rf /opt/microsoft
+
+      - name: 查看清理后磁盘空间
+        run: df -h /
+
       # 0️⃣. 登陆 Hugging Face
       - name: Login to Hugging Face via CLI
         env:
@@ -79,9 +110,9 @@ jobs:
           # 🎯 仓库地址
           HF_PATH="wikeeyang/Flux2-Klein-9B-True-V2"
           # 🎯 模型文件名
-          FILENAME="Flux2-Klein-9B-True-v2-Q8_0.gguf"
+          FILENAME="Flux2-Klein-9B-True-v2-Q4_K.gguf"
           # 🎯 上传的模型名称
-          FILE_TAG="Flux2-Klein-9B-True:v2-Q8_0"
+          FILE_TAG="Flux2-Klein-9B-True:v2-Q4_K"
           # 完整的上传模型名称
           TARGET_REPO="${USERNAME}/${FILE_TAG}"
 
