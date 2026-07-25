@@ -11,8 +11,8 @@ jobs:
     env:
       USERNAME: "feadxus"
       DOMAIN: "hf.co"
-      LONG_NAME: "LuffyTheFox/Qwen3-Uncensored-TextEncoders-Klein-Z-Image-Anima-GGUF:Qwen3-8B-heretic-Genesis.Q8_0.gguf"
-      SHORT_NAME: "Qwen3-Uncensored-TextEncoders-Klein-Z-Image-Anima-GGUF:Qwen3-8B-heretic-Genesis.Q8_0"
+      HF_MODEL: "LuffyTheFox/Qwen3-Uncensored-TextEncoders-Klein-Z-Image-Anima-GGUF:Qwen3-4B-ZImage-Heretic-Genesis-Q8.gguf"
+      FILE_TAG: "Qwen3-Uncensored-TextEncoders-Klein-Z-Image-Anima-GGUF:Q8"
 
     steps:
       # 1️⃣. 安装 Ollama
