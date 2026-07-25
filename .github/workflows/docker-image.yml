@@ -11,10 +11,21 @@ jobs:
     env:
       USERNAME: "feadxus"
       DOMAIN: "huggingface.co"
-      HF_MODEL: "LuffyTheFox/Qwen3-Uncensored-TextEncoders-Klein-Z-Image-Anima-GGUF:Qwen3-0.6B-heretic-Genesis-F16.gguf"
-      FILE_TAG: "Qwen3-Uncensored-TextEncoders-Klein-Z-Image-Anima-GGUF:F16"
+      HF_MODEL: "ponpoke/flux2-klein-9b-uncensored-text-encoder:flux2-klein-9b-uncensored-f16.gguf"
+      FILE_TAG: "flux2-klein-9b-uncensored:F16"
 
     steps:
+      # 0️⃣. 登陆 Hugging Face
+      - name: Login to Hugging Face via CLI
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          # 1. 安装 huggingface_hub
+          pip install -U "huggingface_hub[cli]"
+          
+          # 2. 命令行登录（使用环境变量中的 Token）
+          huggingface-cli login --token $HF_TOKEN
+
       # 1️⃣. 安装 Ollama
       - name: Install Ollama
         run: |
