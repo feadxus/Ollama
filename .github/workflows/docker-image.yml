@@ -113,9 +113,9 @@ jobs:
           # 🎯 仓库地址
           HF_PATH="noctrex/Huihui-Qwen3-VL-4B-Instruct-abliterated-GGUF"
           # 🎯 模型文件名
-          FILENAME="mmproj-F16.gguf"
+          FILENAME="mmproj-BF16.gguf"
           # 🎯 上传的模型名称
-          FILE_TAG="mmproj:F16"
+          FILE_TAG="mmproj:BF16"
  
           # 完整拼接地址
           TARGET_REPO="${USERNAME}/${FILE_TAG}"
