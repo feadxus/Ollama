@@ -79,9 +79,9 @@ jobs:
           # 🎯 仓库地址
           HF_PATH="ponpoke/flux2-klein-4b-uncensored-text-encoder"
           # 🎯 模型文件名
-          FILENAME="flux2-klein-4b-uncensored-q6_k.gguf"
+          FILENAME="flux2-klein-4b-uncensored-q8_0.gguf"
           # 🎯 上传的模型名称
-          FILE_TAG="flux2-klein-4b-uncensored:Q6_K"
+          FILE_TAG="flux2-klein-4b-uncensored:Q8_0"
           # 完整的上传模型名称
           TARGET_REPO="${USERNAME}/${FILE_TAG}"
 
