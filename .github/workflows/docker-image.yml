@@ -111,11 +111,11 @@ jobs:
           DOMAIN="huggingface.co"
 
           # 🎯 仓库地址
-          HF_PATH="the-robot-ai/TinyLink"
+          HF_PATH="noctrex/Huihui-Qwen3-VL-4B-Instruct-abliterated-GGUF"
           # 🎯 模型文件名
-          FILENAME="TinyLink.gguf"
+          FILENAME="mmproj-F16.gguf"
           # 🎯 上传的模型名称
-          FILE_TAG="TinyLink"
+          FILE_TAG="mmproj:F16"
  
           # 完整拼接地址
           TARGET_REPO="${USERNAME}/${FILE_TAG}"
