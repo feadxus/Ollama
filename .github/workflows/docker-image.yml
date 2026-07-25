@@ -10,7 +10,7 @@ jobs:
     # 🎯 全局共享变量:只在这里定义一次,后续所有 Step 统统通用!
     env:
       USERNAME: "feadxus"
-      LONG_NAME: LuffyTheFox/Qwen3-Uncensored-TextEncoders-Klein-Z-Image-Anima-GGUF:Qwen3-0.6B-heretic-Genesis-F16.gguf"
+      LONG_NAME: "LuffyTheFox/Qwen3-Uncensored-TextEncoders-Klein-Z-Image-Anima-GGUF:Qwen3-0.6B-heretic-Genesis-F16.gguf"
       SHORT_NAME: "Qwen3-Uncensored-TextEncoders-Klein-Z-Image-Anima-GGUF:F16"
 
     steps:
