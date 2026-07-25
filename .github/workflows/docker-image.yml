@@ -20,11 +20,8 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # 1. 安装 huggingface_hub
-          pip install -U "huggingface_hub[cli]"
-          
-          # 2. 命令行登录（使用环境变量中的 Token）
-          huggingface-cli login --token $HF_TOKEN
+          pip install -U huggingface_hub
+          huggingface-cli login --token "$HF_TOKEN"
 
       # 1️⃣. 安装 Ollama
       - name: Install Ollama
