@@ -77,11 +77,11 @@ jobs:
           # 域名地址
           DOMAIN="huggingface.co"
           # 🎯 仓库地址
-          HF_PATH="ponpoke/flux2-klein-4b-uncensored-text-encoder"
+          HF_PATH="wikeeyang/Flux2-Klein-9B-True-V2"
           # 🎯 模型文件名
-          FILENAME="flux2-klein-4b-uncensored-q8_0.gguf"
+          FILENAME="Flux2-Klein-9B-True-v2-Q4_K.gguf"
           # 🎯 上传的模型名称
-          FILE_TAG="flux2-klein-4b-uncensored:Q8_0"
+          FILE_TAG="Flux2-Klein-9B-True:v2-Q4_K"
           # 完整的上传模型名称
           TARGET_REPO="${USERNAME}/${FILE_TAG}"
 
