@@ -11,8 +11,8 @@ jobs:
     env:
       USERNAME: "feadxus"
       DOMAIN: "huggingface.co"
-      HF_MODEL: "ponpoke/flux2-klein-4b-uncensored-text-encoder:flux2-klein-4b-uncensored-q4_k_m.gguf"
-      FILE_TAG: "flux2-klein-4b-uncensored:Q4_k_M"
+      HF_MODEL: "ponpoke/flux2-klein-4b-uncensored-text-encoder:flux2-klein-4b-uncensored-q6_k.gguf"
+      FILE_TAG: "flux2-klein-4b-uncensored:Q6_K"
 
     steps:
       # 0️⃣. 登陆 Hugging Face
