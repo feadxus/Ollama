@@ -106,8 +106,8 @@ jobs:
           USERNAME="feadxus"
 
           HF_REPO="DavidAU/Llama-3.2-8X3B-MOE-Dark-Champion-Instruct-uncensored-abliterated-18.4B-GGUF"
-          QUANT_TAG="Q4_0_8_8"
-          FILE_TAG="L3.2-8X3B-MOE-Dark-Champion:Q4_0_8_8"
+          QUANT_TAG="Q4_k_m"
+          FILE_TAG="L3.2-8X3B-MOE-Dark-Champion:Q4_k_m"
 
           # -----------------------------------------------------------------
           # 🚀 下面是自动化执行流程(无需修改任何代码)
