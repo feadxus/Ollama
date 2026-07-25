@@ -21,7 +21,7 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           pip install -U huggingface_hub
-          huggingface-cli login --token "$HF_TOKEN"
+          hf auth login --token "$HF_TOKEN"
 
       # 1️⃣. 安装 Ollama
       - name: Install Ollama
