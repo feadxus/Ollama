@@ -110,12 +110,13 @@ jobs:
           # HF地址
           DOMAIN="huggingface.co"
 
+
           # 🎯 仓库地址
           HF_PATH="wikeeyang/Flux2-Klein-9B-True-V2"
           # 🎯 模型文件名
-          FILENAME="Flux2-Klein-9B-True-v2-Q5_K.gguf"
+          FILENAME="Flux2-Klein-9B-True-v2-Q4_K.gguf"
           # 🎯 上传的模型名称
-          FILE_TAG="Flux2-Klein-9B-True-v2:Q5_K"
+          FILE_TAG="Flux2-Klein-9B-True-v2:Q4_K"
  
           # 完整拼接地址
           TARGET_REPO="${USERNAME}/${FILE_TAG}"
