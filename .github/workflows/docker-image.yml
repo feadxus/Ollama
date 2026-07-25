@@ -112,11 +112,11 @@ jobs:
 
 
           # 🎯 仓库地址
-          HF_PATH="wikeeyang/Flux2-Klein-9B-True-V2"
+          HF_PATH="DavidAU/Llama-3.2-8X3B-MOE-Dark-Champion-Instruct-uncensored-abliterated-18.4B-GGUF"
           # 🎯 模型文件名
-          FILENAME="Flux2-Klein-9B-True-v2-Q4_K.gguf"
+          FILENAME="L3.2-8X3B-MOE-Dark-Champion-Inst-18.4B-uncen-ablit_D_AU-Q4_0_8_8.gguf"
           # 🎯 上传的模型名称
-          FILE_TAG="Flux2-Klein-9B-True-v2:Q4_K"
+          FILE_TAG="L3.2-8X3B-MOE-Dark-Champion-Inst-18.4B-uncen-ablit_D_AU:Q4_0_8_8"
  
           # 完整拼接地址
           TARGET_REPO="${USERNAME}/${FILE_TAG}"
