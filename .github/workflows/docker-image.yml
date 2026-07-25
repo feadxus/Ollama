@@ -111,11 +111,11 @@ jobs:
           DOMAIN="huggingface.co"
 
           # 🎯 仓库地址
-          HF_PATH="ponpoke/flux2-klein-9b-uncensored-text-encoder"
+          HF_PATH="the-robot-ai/TinyLink"
           # 🎯 模型文件名
-          FILENAME="flux2-klein-9b-uncensored-f16.gguf"
+          FILENAME="TinyLink.gguf"
           # 🎯 上传的模型名称
-          FILE_TAG="flux2-klein-9b-uncensored:f16"
+          FILE_TAG="TinyLink"
  
           # 完整拼接地址
           TARGET_REPO="${USERNAME}/${FILE_TAG}"
