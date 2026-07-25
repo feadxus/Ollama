@@ -112,11 +112,11 @@ jobs:
 
 
           # 🎯 仓库地址
-          HF_PATH="MaziyarPanahi/Llama-3.2-3B-Instruct-uncensored-GGUF"
+          HF_PATH="wikeeyang/Flux2-Klein-9B-True-V2"
           # 🎯 模型文件名
-          FILENAME="Llama-3.2-3B-Instruct-uncensored.fp16.gguf"
+          FILENAME="Flux2-Klein-9B-True-v2-Q4_K.gguf"
           # 🎯 上传的模型名称
-          FILE_TAG="Llama-3.2-3B-Instruct-uncensored:FP16"
+          FILE_TAG="Flux2-Klein-9B-True-v2:Q4_K"
  
           # 完整拼接地址
           TARGET_REPO="${USERNAME}/${FILE_TAG}"
