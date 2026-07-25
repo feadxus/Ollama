@@ -7,12 +7,34 @@ jobs:
   download-and-upload:
     runs-on: ubuntu-latest
     steps:
-      # 2️⃣. 📥 安装并启动 Ollama 后台服务
-      - name: Install and Start Ollama
+      # 1️⃣. 安装 Ollama
+      - name: Install Ollama
         run: |
           echo "📥 安装 Ollama..."
           curl -fsSL https://ollama.com/install.sh | sh
 
+      # 2️⃣. 注入密钥 (免登录授权)
+      - name: Inject Ollama SSH Keys
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.OLLAMA_PRIVATE_KEY }}
+          SSH_PUBLIC_KEY: ${{ secrets.OLLAMA_PUBLIC_KEY }}
+        run: |
+          echo "🔑 正在注入 Ollama SSH 密钥..."
+          mkdir -p $HOME/.ollama
+          sudo mkdir -p /usr/share/ollama/.ollama
+          
+          echo "$SSH_PRIVATE_KEY" > $HOME/.ollama/id_ed25519
+          echo "$SSH_PUBLIC_KEY" > $HOME/.ollama/id_ed25519.pub
+          
+          chmod 600 $HOME/.ollama/id_ed25519
+          chmod 644 $HOME/.ollama/id_ed25519.pub
+          
+          sudo cp -r $HOME/.ollama/* /usr/share/ollama/.ollama/ 2>/dev/null || true
+          sudo chmod -R 600 /usr/share/ollama/.ollama/id_ed25519 2>/dev/null || true
+
+      # 3️⃣. 启动 Ollama 后台服务
+      - name: Start Ollama Service
+        run: |
           echo "🚀 在后台启动 Ollama 服务..."
           nohup ollama serve > ollama.log 2>&1 &
 
@@ -26,26 +48,24 @@ jobs:
             sleep 1
           done
 
-      # 🔍. 🔎 精准查找并打印 id_ed25519 的位置与详细信息
-      - name: Find Ollama Key Location
+      # 4️⃣. 下载、优雅重命名并推送上传
+      # ⚠️ 请把下方的 YOUR_OLLAMA_USERNAME 替换为您在 ollama.com 的真实用户名
+      - name: Pull, Rename and Push Model
         run: |
-          echo "🔍 正在全盘搜索 Ollama 的 id_ed25519 密钥文件..."
+          USERNAME="YOUR_OLLAMA_USERNAME"
           
-          # 全盘搜索名为 id_ed25519 的文件
-          KEY_PATHS=$(sudo find / -name "id_ed25519" 2>/dev/null)
+          LONG_NAME="hf.co/noctrex/Huihui-Qwen3-VL-4B-Instruct-abliterated-GGUF:Q6_K"
+          SHORT_NAME="Huihui-Qwen3-VL-4B:Q6_K"
+          TARGET_REPO="${USERNAME}/${SHORT_NAME}"
 
-          if [ -n "$KEY_PATHS" ]; then
-            echo "----------------------------------------"
-            echo "🎯 找到密钥文件路径："
-            echo "$KEY_PATHS"
-            echo "----------------------------------------"
-            
-            echo "📋 详细属性与所属目录信息："
-            for path in $KEY_PATHS; do
-              ls -la "$path"*
-              echo "📁 父级目录为: $(dirname "$path")"
-            done
-            echo "----------------------------------------"
-          else
-            echo "❌ 未找到 id_ed25519 文件！(可能需要先执行一次 ollama run/pull 或等待服务完全初始化)"
-          fi
+          echo "📥 1. 把模型拉下来..."
+          ollama pull $LONG_NAME
+
+          echo "🏷️ 2. 复制为简短的本地名称与推送名称..."
+          ollama cp $LONG_NAME $TARGET_REPO
+
+          echo "🧹 3. 把原来那个长名字删掉清理空间..."
+          ollama rm $LONG_NAME
+
+          echo "🚀 4. 推送上传到个人仓库..."
+          ollama push $TARGET_REPO
