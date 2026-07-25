@@ -105,9 +105,9 @@ jobs:
           # 👤 你的 Ollama Hub 用户名
           USERNAME="feadxus"
 
-          HF_REPO="noctrex/Huihui-Qwen3-VL-4B-Instruct-abliterated-GGUF"
-          QUANT_TAG="mmproj-F32"
-          MY_TAG="mmproj:F32"
+          HF_REPO="TinyLink.gguf"
+          QUANT_TAG="TinyLink"
+          MY_TAG="the-robot-ai:TinyLink"
 
           # -----------------------------------------------------------------
           # 🚀 下面是自动化执行流程(无需修改任何代码)
