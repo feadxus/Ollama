@@ -105,9 +105,9 @@ jobs:
           # 👤 你的 Ollama Hub 用户名
           USERNAME="feadxus"
 
-          HF_REPO="wikeeyang/Flux2-Klein-9B-True-V2"
-          QUANT_TAG="v2-Q5_K"
-          MY_TAG="Flux2-Klein-9B-True:v2-Q5_K"
+          HF_REPO="noctrex/Huihui-Qwen3-VL-4B-Instruct-abliterated-GGUF"
+          QUANT_TAG="MXFP4"
+          MY_TAG="Huihui-Qwen3-VL-4B-Instruct-abliterated:MXFP4"
 
           # -----------------------------------------------------------------
           # 🚀 下面是自动化执行流程(无需修改任何代码)
