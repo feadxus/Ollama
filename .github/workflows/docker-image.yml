@@ -66,32 +66,21 @@ jobs:
             sleep 1
           done
 
-      # 4️⃣. 📥 拉取 Hugging Face 模型
-      - name: Pull Model from HF
+      - name: Download GGUF and Build Model
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # 在 Bash 里动态拼装完整的 LONG_NAME
-          LONG_NAME="${DOMAIN}/${HF_MODEL}"
-          echo "📥 正在拉取: $LONG_NAME ..."
-          ollama pull $LONG_NAME
+          echo "📥 1. 用 wget 带着 Token 直接把文件拽下来！"
+          wget -q --show-progress \
+            --header="Authorization: Bearer $HF_TOKEN" \
+            -c "https://huggingface.co/ponpoke/flux2-klein-9b-uncensored-text-encoder/resolve/main/flux2-klein-9b-uncensored-f16.gguf" \
+            -O model.gguf
 
-      # 5️⃣. 🏷️ 重命名并准备个人仓库 Tag
-      - name: Rename Model Tag
-        run: |
-          LONG_NAME="${DOMAIN}/${HF_MODEL}"
-          TARGET_REPO="${USERNAME}/${FILE_TAG}"
-          echo "🏷️ 复制模型为简短标签: $TARGET_REPO ..."
-          ollama cp $LONG_NAME $TARGET_REPO
+          echo "📄 2. 伪造一个 Modelfile"
+          echo "FROM ./model.gguf" > Modelfile
 
-      # 6️⃣. 🧹 清理原始长标签
-      - name: Clean Up Original Tag
-        run: |
-          LONG_NAME="${DOMAIN}/${HF_MODEL}"
-          echo "🧹 清理临时标签..."
-          ollama rm $LONG_NAME
+          echo "🔨 3. 让 Ollama 直接读取本地文件打包（绕过它的网络拉取限制）"
+          ollama create feadxus/flux2-klein-9b-uncensored-f16:latest -f Modelfile
 
-      # 7️⃣. 🚀 推送上传到 Ollama 个人仓库
-      - name: Push Model to Ollama Hub
-        run: |
-          TARGET_REPO="${USERNAME}/${FILE_TAG}"
-          echo "🚀 正在推送模型到个人 Hub: $TARGET_REPO ..."
-          ollama push $TARGET_REPO
+          echo "🚀 4. 推送到你的 Ollama Hub"
+          ollama push feadxus/flux2-klein-9b-uncensored-f16:latest
