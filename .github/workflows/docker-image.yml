@@ -97,34 +97,35 @@ jobs:
             sleep 1
           done
 
-      # 4️⃣. 零磁盘占用！让 Ollama 直连 HF 构建并推送到个人 Hub
+      # 4️⃣. 零磁盘占用!让 Ollama 直连 HF 构建并推送到个人 Hub
       - name: Build and Push directly via Ollama
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
+          # 👤 你的 Ollama Hub 用户名
           USERNAME="feadxus"
-          
-          # 🎯 1. Hugging Face 上的目标信息
-          HF_REPO="DavidAU/Llama-3.2-8X3B-MOE-Dark-Champion-Instruct-uncensored-abliterated-18.4B-GGUF"
-          # 🎯 注意：这里直接填文件名中的 Tag（如 Q8_0, Q4_K_M, F16 等）
-          QUANT_TAG="Q8_0"
 
-          # 🎯 2. 你准备推送到自己 Ollama Hub 的名称
-          MY_TAG="L3.2-8X3B-MOE-Dark-Champion:Q8_0"
+          HF_REPO="DavidAU/Llama-3.2-8X3B-MOE-Dark-Champion-Instruct-uncensored-abliterated-18.4B-GGUF"
+          QUANT_TAG="IQ4_XS"
+          FILE_TAG="L3.2-8X3B-MOE-Dark-Champion:IQ4_XS"
+
+          # -----------------------------------------------------------------
+          # 🚀 下面是自动化执行流程(无需修改任何代码)
+          # -----------------------------------------------------------------
           TARGET_REPO="${USERNAME}/${MY_TAG}"
 
-          echo "📄 1. 生成指向 Hugging Face 的直连 Modelfile..."
-          # 魔法在这里：FROM 直接写 huggingface.co/仓库:Tag
+          echo "📄 生成指向 Hugging Face 的直连 Modelfile..."
+          # 利用 Ollama 语法:FROM huggingface.co/仓库名:量化Tag
           echo "FROM huggingface.co/${HF_REPO}:${QUANT_TAG}" > Modelfile
 
-          echo "🔨 2. 让 Ollama 边下载边直接打包（彻底省去 wget 磁盘空间！）..."
+          echo "🔨 让 Ollama 边下载边直接打包(零暂存文件,大幅省磁盘!)..."
           ollama create $TARGET_REPO -f Modelfile
 
-          echo "🔍 3. 【安全校验】检查本地模型列表..."
+          echo "🔍 检查本地模型列表..."
           ollama list
 
-          echo "🚀 4. 推送到个人 Ollama Hub..."
+          echo "🚀 推送到个人 Ollama Hub..."
           ollama push $TARGET_REPO
 
-          echo "🧹 5. 清理 Modelfile 缓存..."
+          echo "🧹 清理 Modelfile 配置文件..."
           rm -f Modelfile
