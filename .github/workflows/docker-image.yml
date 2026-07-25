@@ -106,8 +106,8 @@ jobs:
           USERNAME="feadxus"
 
           HF_REPO="noctrex/Huihui-Qwen3-VL-4B-Instruct-abliterated-GGUF"
-          QUANT_TAG="IQ3_XS"
-          MY_TAG="Huihui-Qwen3-VL-4B-Instruct-abliterated:IQ3_XS"
+          QUANT_TAG="IQ3_XXS"
+          MY_TAG="Huihui-Qwen3-VL-4B-Instruct-abliterated:IQ3_XXS"
 
           # -----------------------------------------------------------------
           # 🚀 下面是自动化执行流程(无需修改任何代码)
