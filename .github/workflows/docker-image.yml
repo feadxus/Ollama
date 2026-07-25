@@ -84,6 +84,6 @@ jobs:
       # 7️⃣. 🚀 推送上传到 Ollama 个人仓库
       - name: Push Model to Ollama Hub
         run: |
-          TARGET_REPO="${USERNAME}/${SHORT_NAME}"
+          TARGET_REPO="${USERNAME}/${FILE_TAG}"
           echo "🚀 正在推送模型到个人 Hub: $TARGET_REPO ..."
           ollama push $TARGET_REPO
