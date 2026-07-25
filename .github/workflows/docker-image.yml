@@ -77,7 +77,7 @@ jobs:
       # 6️⃣. 🧹 清理原始长标签
       - name: Clean Up Original Tag
         run: |
-          LONG_NAME="${DOMAIN}/${HF_MODEL}:${FILE_TAG}"
+          LONG_NAME="${DOMAIN}/${HF_MODEL}"
           echo "🧹 清理临时标签..."
           ollama rm $LONG_NAME
 
