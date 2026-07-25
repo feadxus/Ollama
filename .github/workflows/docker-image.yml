@@ -66,21 +66,40 @@ jobs:
             sleep 1
           done
 
-      - name: Download GGUF and Build Model
+      # 4️⃣. 直链下载、构建并推送到个人 Hub
+      - name: Download GGUF, Build and Validate
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          echo "📥 1. 用 wget 带着 Token 直接把文件拽下来！"
+          # 1. 下载参数配置
+          USERNAME="feadxus"
+          DOMAIN="huggingface.co"
+          HF_PATH="ponpoke/flux2-klein-9b-uncensored-text-encoder"
+          FILENAME="flux2-klein-9b-uncensored-q6_k.gguf"
+          FILE_TAG="flux2-klein-9b-uncensored:Q6_k"
+
+          TARGET_REPO="${USERNAME}/${FILE_TAG}"
+
+          echo "📥 1. 使用 wget 直链下载 GGUF 权重..."
           wget -q --show-progress \
             --header="Authorization: Bearer $HF_TOKEN" \
-            -c "https://huggingface.co/ponpoke/flux2-klein-9b-uncensored-text-encoder/resolve/main/flux2-klein-9b-uncensored-f16.gguf" \
+            -c "https://$DOMAIN/$HF_PATH/resolve/main/$FILENAME" \
             -O model.gguf
 
-          echo "📄 2. 伪造一个 Modelfile"
+          echo "📄 2. 生成 Modelfile..."
           echo "FROM ./model.gguf" > Modelfile
 
-          echo "🔨 3. 让 Ollama 直接读取本地文件打包（绕过它的网络拉取限制）"
-          ollama create feadxus/flux2-klein-9b-uncensored-f16:latest -f Modelfile
+          echo "🔨 3. 导入并打包模型..."
+          ollama create $TARGET_REPO -f Modelfile
 
-          echo "🚀 4. 推送到你的 Ollama Hub"
-          ollama push feadxus/flux2-klein-9b-uncensored-f16:latest
+          echo "🔍 4. 【安全校验】检查本地模型列表..."
+          ollama list | grep "$USERNAME"
+
+          echo "🔍 5. 【安全校验】打印模型结构详情..."
+          ollama show $TARGET_REPO
+
+          echo "🚀 6. 推送到 Ollama Hub..."
+          ollama push $TARGET_REPO
+
+          echo "🧹 7. 清理 Runner 磁盘空间..."
+          rm -f model.gguf Modelfile
