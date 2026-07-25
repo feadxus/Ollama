@@ -11,8 +11,8 @@ jobs:
     env:
       USERNAME: "feadxus"
       DOMAIN: "huggingface.co"
-      HF_MODEL: "ponpoke/flux2-klein-9b-uncensored-text-encoder:flux2-klein-9b-uncensored-f16.gguf"
-      FILE_TAG: "flux2-klein-9b-uncensored:F16"
+      HF_MODEL: "ponpoke/flux2-klein-4b-uncensored-text-encoder:flux2-klein-4b-uncensored-q4_k_m.gguf"
+      FILE_TAG: "flux2-klein-4b-uncensored:Q4_k_M"
 
     steps:
       # 0️⃣. 登陆 Hugging Face
@@ -66,43 +66,32 @@ jobs:
             sleep 1
           done
 
-      # 4️⃣. 直链下载、构建并推送到个人 Hub
-      - name: Download GGUF, Build and Validate
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      # 4️⃣. 📥 拉取 Hugging Face 模型
+      - name: Pull Model from HF
         run: |
-          # 1. 下载参数配置
-          USERNAME="feadxus"
-          DOMAIN="huggingface.co"
-          # 🎯 仓库地址
-          HF_PATH="ponpoke/flux2-klein-9b-uncensored-text-encoder"
-          # 🎯 模型文件名
-          FILENAME="flux2-klein-9b-uncensored-q8_0.gguf"
-          # 🎯 上传的模型名称
-          FILE_TAG="flux2-klein-9b-uncensored:Q8_0"
+          # 在 Bash 里动态拼装完整的 LONG_NAME
+          LONG_NAME="${DOMAIN}/${HF_MODEL}"
+          echo "📥 正在拉取: $LONG_NAME ..."
+          ollama pull $LONG_NAME
 
+      # 5️⃣. 🏷️ 重命名并准备个人仓库 Tag
+      - name: Rename Model Tag
+        run: |
+          LONG_NAME="${DOMAIN}/${HF_MODEL}"
           TARGET_REPO="${USERNAME}/${FILE_TAG}"
+          echo "🏷️ 复制模型为简短标签: $TARGET_REPO ..."
+          ollama cp $LONG_NAME $TARGET_REPO
 
-          echo "📥 1. 使用 wget 直链下载 GGUF 权重..."
-          wget -q --show-progress \
-            --header="Authorization: Bearer $HF_TOKEN" \
-            -c "https://$DOMAIN/$HF_PATH/resolve/main/$FILENAME" \
-            -O model.gguf
+      # 6️⃣. 🧹 清理原始长标签
+      - name: Clean Up Original Tag
+        run: |
+          LONG_NAME="${DOMAIN}/${HF_MODEL}"
+          echo "🧹 清理临时标签..."
+          ollama rm $LONG_NAME
 
-          echo "📄 2. 生成 Modelfile..."
-          echo "FROM ./model.gguf" > Modelfile
-
-          echo "🔨 3. 导入并打包模型..."
-          ollama create $TARGET_REPO -f Modelfile
-
-          echo "🔍 4. 【安全校验】检查本地模型列表..."
-          ollama list | grep "$USERNAME"
-
-          echo "🔍 5. 【安全校验】打印模型结构详情..."
-          ollama show $TARGET_REPO
-
-          echo "🚀 6. 推送到 Ollama Hub..."
+      # 7️⃣. 🚀 推送上传到 Ollama 个人仓库
+      - name: Push Model to Ollama Hub
+        run: |
+          TARGET_REPO="${USERNAME}/${FILE_TAG}"
+          echo "🚀 正在推送模型到个人 Hub: $TARGET_REPO ..."
           ollama push $TARGET_REPO
-
-          echo "🧹 7. 清理 Runner 磁盘空间..."
-          rm -f model.gguf Modelfile
