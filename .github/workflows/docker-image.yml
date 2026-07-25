@@ -11,8 +11,8 @@ jobs:
     env:
       USERNAME: "feadxus"
       DOMAIN: "hf.co"
-      HF_MODEL: "ponpoke/flux2-klein-9b-uncensored-text-encoder:flux2-klein-9b-uncensored-q4_k_m.gguf"
-      FILE_TAG: "flux2-klein-9b-uncensored:q4_k_m"
+      HF_MODEL: "ponpoke/flux2-klein-9b-uncensored-text-encoder:flux2-klein-9b-uncensored-q6_k.gguf"
+      FILE_TAG: "flux2-klein-9b-uncensored:q6_k"
 
     steps:
       # 1️⃣. 安装 Ollama
