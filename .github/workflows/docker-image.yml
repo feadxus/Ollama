@@ -6,6 +6,13 @@ on:
 jobs:
   download-and-upload:
     runs-on: ubuntu-latest
+    
+    # 🎯 全局共享变量:只在这里定义一次,后续所有 Step 统统通用!
+    env:
+      USERNAME: "feadxus"
+      LONG_NAME: "hf.co/noctrex/Huihui-Qwen3-VL-4B-Instruct-abliterated-GGUF:Q6_K"
+      SHORT_NAME: "Huihui-Qwen3-VL-4B:Q6_K"
+
     steps:
       # 1️⃣. 安装 Ollama
       - name: Install Ollama
@@ -28,7 +35,7 @@ jobs:
           chmod 600 $HOME/.ollama/id_ed25519
           chmod 644 $HOME/.ollama/id_ed25519.pub
 
-          # 2. 同步写入后台 service 目录（防止部分系统环境中 ollama serve 读不到）
+          # 2. 同步写入后台 service 目录(防止部分系统环境中 ollama serve 读不到)
           sudo mkdir -p /usr/share/ollama/.ollama
           sudo cp -r $HOME/.ollama/* /usr/share/ollama/.ollama/
           sudo chmod 600 /usr/share/ollama/.ollama/id_ed25519
@@ -50,54 +57,43 @@ jobs:
             sleep 1
           done
 
-      # 4️⃣. 📥 拉取 Hugging Face 模型（带自动重试）
+      # 4️⃣. 📥 拉取 Hugging Face 模型(带自动重试)
       - name: Pull Model from HF
         run: |
-          LONG_NAME="hf.co/noctrex/Huihui-Qwen3-VL-4B-Instruct-abliterated-GGUF:Q6_K"
-
           echo "📥 正在从 Hugging Face 拉取模型 (最多重试 5 次)..."
           SUCCESS=0
           for i in {1..5}; do
             echo "🔄 尝试第 $i 次拉取..."
             if ollama pull $LONG_NAME; then
-              echo "✅ 模型拉取成功！"
+              echo "✅ 模型拉取成功!"
               SUCCESS=1
               break
             fi
-            echo "⚠️ 第 $i 次拉取超时，等待 5 秒后重试..."
+            echo "⚠️ 第 $i 次拉取超时,等待 5 秒后重试..."
             sleep 5
           done
 
           if [ $SUCCESS -eq 0 ]; then
-            echo "❌ 连续 5 次拉取失败，判定为网络超时。"
+            echo "❌ 连续 5 次拉取失败,判定为网络超时。"
             exit 1
           fi
 
       # 5️⃣. 🏷️ 重命名并准备个人仓库 Tag
       - name: Rename Model Tag
         run: |
-          USERNAME="feadxus"
-          LONG_NAME="hf.co/noctrex/Huihui-Qwen3-VL-4B-Instruct-abliterated-GGUF:Q6_K"
-          SHORT_NAME="Huihui-Qwen3-VL-4B:Q6_K"
           TARGET_REPO="${USERNAME}/${SHORT_NAME}"
-
           echo "🏷️ 复制模型为简短标签: $TARGET_REPO ..."
           ollama cp $LONG_NAME $TARGET_REPO
 
       # 6️⃣. 🧹 清理 Hugging Face 的长名称标签
       - name: Clean Up Original Tag
         run: |
-          LONG_NAME="hf.co/noctrex/Huihui-Qwen3-VL-4B-Instruct-abliterated-GGUF:Q6_K"
-          
-          echo "🧹 删除原始长名字标签（不影响已复制的镜像内容）..."
+          echo "🧹 删除原始长名字标签(不影响已复制的镜像内容)..."
           ollama rm $LONG_NAME
 
       # 7️⃣. 🚀 推送上传到 Ollama 个人仓库
       - name: Push Model to Ollama Hub
         run: |
-          USERNAME="feadxus"
-          SHORT_NAME="Huihui-Qwen3-VL-4B:Q6_K"
           TARGET_REPO="${USERNAME}/${SHORT_NAME}"
-
           echo "🚀 正在推送模型到个人 Hub: $TARGET_REPO ..."
           ollama push $TARGET_REPO
