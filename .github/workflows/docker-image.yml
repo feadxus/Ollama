@@ -98,3 +98,8 @@ jobs:
           echo "🚀 正在推送模型到个人 Hub: $TARGET_REPO ..."
           ollama push $TARGET_REPO
           ollama rm feadxus/Huihui-Qwen3-VL-4B:Q6_K
+
+
+      - name: D
+        run: |
+          ollama rm feadxus/Huihui-Qwen3-VL-4B:Q6_K
