@@ -6,6 +6,7 @@ on:
 jobs:
   download-and-upload:
     runs-on: ubuntu-latest
+
     steps:
       # ====================================================================
       # 腾出空间!通过卸载不需要的 Android、.NET 等工具,释放出约 30GB+ 空间
@@ -44,7 +45,8 @@ jobs:
         run: sudo rm -rf /opt/microsoft
 
       - name: 查看清理后磁盘空间
-        run: df -h /
+        run: df -h
+
 
       # 0️⃣. 登陆 Hugging Face
       - name: Login to Hugging Face via CLI
@@ -97,35 +99,47 @@ jobs:
             sleep 1
           done
 
-      # 4️⃣. 零磁盘占用!让 Ollama 直连 HF 构建并推送到个人 Hub
-      - name: Build and Push directly via Ollama
+      # 4️⃣. 直链下载、构建并推送到个人 Hub
+      - name: Download GGUF, Build and Validate
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # 👤 你的 Ollama Hub 用户名
+          # 1. 下载参数配置
+          # 用户名
           USERNAME="feadxus"
+          # HF地址
+          DOMAIN="huggingface.co"
 
-          HF_REPO="MaziyarPanahi/Llama-3.2-3B-Instruct-uncensored-GGUF"
-          QUANT_TAG="fp16"
-          MY_TAG="Llama-3.2-3B-Instruct-uncensored:FP16"
+          # 🎯 仓库地址
+          HF_PATH="MaziyarPanahi/Llama-3.2-3B-Instruct-uncensored-GGUF"
+          # 🎯 模型文件名
+          FILENAME="Llama-3.2-3B-Instruct-uncensored.fp16.gguf"
+          # 🎯 上传的模型名称
+          FILE_TAG="Llama-3.2-3B-Instruct-uncensored:FP16"
+ 
+          # 完整拼接地址
+          TARGET_REPO="${USERNAME}/${FILE_TAG}"
 
-          # -----------------------------------------------------------------
-          # 🚀 下面是自动化执行流程(无需修改任何代码)
-          # -----------------------------------------------------------------
-          TARGET_REPO="${USERNAME}/${MY_TAG}"
+          echo "📥 1. 使用 wget 直链下载 GGUF 权重..."
+          wget -q --show-progress \
+            --header="Authorization: Bearer $HF_TOKEN" \
+            -c "https://$DOMAIN/$HF_PATH/resolve/main/$FILENAME" \
+            -O model.gguf
 
-          echo "📄 生成指向 Hugging Face 的直连 Modelfile..."
-          # 利用 Ollama 语法:FROM huggingface.co/仓库名:量化Tag
-          echo "FROM huggingface.co/${HF_REPO}:${QUANT_TAG}" > Modelfile
+          echo "📄 2. 生成 Modelfile..."
+          echo "FROM ./model.gguf" > Modelfile
 
-          echo "🔨 让 Ollama 边下载边直接打包(零暂存文件,大幅省磁盘!)..."
+          echo "🔨 3. 导入并打包模型..."
           ollama create $TARGET_REPO -f Modelfile
 
-          echo "🔍 检查本地模型列表..."
-          ollama list
+          echo "🔍 4. 【安全校验】检查本地模型列表..."
+          ollama list | grep "$USERNAME"
 
-          echo "🚀 推送到个人 Ollama Hub..."
+          echo "🔍 5. 【安全校验】打印模型结构详情..."
+          ollama show $TARGET_REPO
+
+          echo "🚀 6. 推送到 Ollama Hub..."
           ollama push $TARGET_REPO
 
-          echo "🧹 清理 Modelfile 配置文件..."
-          rm -f Modelfile
+          echo "🧹 7. 清理 Runner 磁盘空间..."
+          rm -f model.gguf Modelfile
