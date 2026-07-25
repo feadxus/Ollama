@@ -112,9 +112,9 @@ jobs:
           # 🎯 仓库地址
           HF_PATH="DavidAU/Llama-3.2-8X3B-MOE-Dark-Champion-Instruct-uncensored-abliterated-18.4B-GGUF"
           # 🎯 模型文件名
-          FILENAME="L3.2-8X3B-MOE-Dark-Champion-Inst-18.4B-uncen-ablit_D_AU-Q4_0_8_8.gguf"
+          FILENAME=".gguf"
           # 🎯 上传的模型名称
-          FILE_TAG="L3.2-8X3B-MOE-Dark-Champion-Inst-18.4B-uncen-ablit_:D_AU-Q4_0_8_8"
+          FILE_TAG="L3.2-8X3B-MOE-Dark-Champion-Inst-18.4B-uncen-ablit_:D_AU-Q4_k_m"
 
 
           # 完整的上传模型名称
