@@ -10,8 +10,8 @@ jobs:
     # 🎯 全局共享变量:只在这里定义一次,后续所有 Step 统统通用!
     env:
       USERNAME: "feadxus"
-      LONG_NAME: "hf.co/BennyDaBall/Qwen3-4b-Z-Image-Turbo-AbliteratedV1:Q6_K"
-      SHORT_NAME: "Qwen3-4b-Z-Image-Turbo-AbliteratedV1:Q6_K"
+      LONG_NAME: "hf.co/BennyDaBall/Qwen3-4b-Z-Image-Turbo-AbliteratedV1:Q8_0"
+      SHORT_NAME: "Qwen3-4b-Z-Image-Turbo-AbliteratedV1:Q8_0"
 
     steps:
       # 1️⃣. 安装 Ollama
