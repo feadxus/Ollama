@@ -74,9 +74,12 @@ jobs:
           # 1. 下载参数配置
           USERNAME="feadxus"
           DOMAIN="huggingface.co"
+          # 🎯 仓库地址
           HF_PATH="ponpoke/flux2-klein-9b-uncensored-text-encoder"
-          FILENAME="flux2-klein-9b-uncensored-q6_k.gguf"
-          FILE_TAG="flux2-klein-9b-uncensored:Q6_k"
+          # 🎯 模型文件名
+          FILENAME="flux2-klein-9b-uncensored-f16.gguf"
+          # 🎯 上传的模型名称
+          FILE_TAG="flux2-klein-9b-uncensored:F16"
 
           TARGET_REPO="${USERNAME}/${FILE_TAG}"
 
