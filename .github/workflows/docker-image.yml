@@ -106,8 +106,8 @@ jobs:
           USERNAME="feadxus"
 
           HF_REPO="DreamFast/Qwen3-VL-4b-heretic-GGUF"
-          QUANT_TAG="F16"
-          MY_TAG="qwen3-vl-4b-heretic:F16"
+          QUANT_TAG="Q3_K_M"
+          MY_TAG="qwen3-vl-4b-heretic:Q3_K_M"
 
           # -----------------------------------------------------------------
           # 🚀 下面是自动化执行流程(无需修改任何代码)
