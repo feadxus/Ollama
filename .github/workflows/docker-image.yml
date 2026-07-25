@@ -106,8 +106,8 @@ jobs:
           USERNAME="feadxus"
 
           HF_REPO="wikeeyang/Flux2-Klein-9B-True-V2"
-          QUANT_TAG="v2-Q6_K"
-          MY_TAG="Flux2-Klein-9B-True:v2-Q6_K"
+          QUANT_TAG="v2-Q8_0"
+          MY_TAG="Flux2-Klein-9B-True:v2-Q8_0"
 
           # -----------------------------------------------------------------
           # 🚀 下面是自动化执行流程(无需修改任何代码)
