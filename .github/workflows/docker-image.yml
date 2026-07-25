@@ -13,24 +13,26 @@ jobs:
           echo "📥 安装 Ollama..."
           curl -fsSL https://ollama.com/install.sh | sh
 
-      # 2️⃣. 注入密钥 (免登录授权)
-      - name: Inject Ollama SSH Keys
+      # 2️⃣. 🔑 注入密钥 (让 Actions 拿到账号的推送权限)
+      - name: Inject Ollama Keys
         env:
           SSH_PRIVATE_KEY: ${{ secrets.OLLAMA_PRIVATE_KEY }}
           SSH_PUBLIC_KEY: ${{ secrets.OLLAMA_PUBLIC_KEY }}
         run: |
-          echo "🔑 正在注入 Ollama SSH 密钥..."
-          mkdir -p $HOME/.ollama
-          sudo mkdir -p /usr/share/ollama/.ollama
+          echo "🔑 正在写入 Ollama 身份密钥..."
           
+          # 1. 写入用户主目录
+          mkdir -p $HOME/.ollama
           echo "$SSH_PRIVATE_KEY" > $HOME/.ollama/id_ed25519
           echo "$SSH_PUBLIC_KEY" > $HOME/.ollama/id_ed25519.pub
-          
           chmod 600 $HOME/.ollama/id_ed25519
           chmod 644 $HOME/.ollama/id_ed25519.pub
-          
-          sudo cp -r $HOME/.ollama/* /usr/share/ollama/.ollama/ 2>/dev/null || true
-          sudo chmod -R 600 /usr/share/ollama/.ollama/id_ed25519 2>/dev/null || true
+
+          # 2. 同步写入后台 service 目录（防止部分系统环境中 ollama serve 读不到）
+          sudo mkdir -p /usr/share/ollama/.ollama
+          sudo cp -r $HOME/.ollama/* /usr/share/ollama/.ollama/
+          sudo chmod 600 /usr/share/ollama/.ollama/id_ed25519
+          sudo chmod 644 /usr/share/ollama/.ollama/id_ed25519.pub
 
       # 3️⃣. 启动 Ollama 后台服务
       - name: Start Ollama Service
