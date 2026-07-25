@@ -106,8 +106,8 @@ jobs:
           USERNAME="feadxus"
 
           HF_REPO="MaziyarPanahi/Llama-3.2-3B-Instruct-uncensored-GGUF"
-          QUANT_TAG="Q2_K"
-          MY_TAG="Llama-3.2-3B-Instruct-uncensored:Q2_K"
+          QUANT_TAG="Q3_K_L"
+          MY_TAG="Llama-3.2-3B-Instruct-uncensored:Q3_K_L"
 
           # -----------------------------------------------------------------
           # 🚀 下面是自动化执行流程(无需修改任何代码)
