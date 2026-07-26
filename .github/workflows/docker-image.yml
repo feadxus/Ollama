@@ -104,27 +104,33 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           USERNAME="feadxus"
-          DOMAIN="huggingface.co"
-          HF_PATH="DavidAU/Llama-3.2-8X3B-MOE-Dark-Champion-Instruct-uncensored-abliterated-18.4B-GGUF"
-          FILENAME="L3.2-8X3B-MOE-Dark-Champion-Inst-18.4B-uncen-ablit_D_AU-Q4_0_4_4.gguf"
           
-          # 推送到你 Hub 上的名字
-          TARGET_REPO="${USERNAME}/L3.2-8X3B-MOE-Dark-Champion:Q4_0_4_4"
+          # 1. 精确配置仓库与文件名（大小写严格匹配网页 URL）
+          DOMAIN="huggingface.co"
+          HF_PATH="wikeeyang/Flux2-Klein-9B-True-V2"
+          FILENAME="Flux2-Klein-9B-True-v2-Q5_K.gguf"
+          
+          # 2. 推送到你个人 Hub 的名字
+          TARGET_REPO="${USERNAME}/flux2-klein-9b-true-v2:Q5_K"
 
-          echo "📥 1. 用 wget 直接锁定精准文件名下载..."
-          wget -q --show-progress \
+          echo "📥 1. 使用 wget 精确锁定下载（开启 -c 断点续传 与 重定向追踪）..."
+          # 🎯 核心修正：加了 -L 确保跟随 Hugging Face 的 LFS 大文件重定向链接
+          wget -c -L --show-progress \
             --header="Authorization: Bearer $HF_TOKEN" \
-            -c "https://$DOMAIN/$HF_PATH/resolve/main/$FILENAME" \
+            "https://$DOMAIN/$HF_PATH/resolve/main/$FILENAME" \
             -O model.gguf
 
-          echo "📄 2. 生成本地指向的 Modelfile..."
+          echo "📄 2. 生成 Modelfile..."
           echo "FROM ./model.gguf" > Modelfile
 
-          echo "🔨 3. 打包模型..."
+          echo "🔨 3. 导入并打包到 Ollama..."
           ollama create $TARGET_REPO -f Modelfile
 
-          echo "🚀 4. 推送到 Ollama Hub..."
+          echo "🧹 4. 打包完立刻删除源文件，给 push 腾出磁盘空间！"
+          rm -f model.gguf Modelfile
+
+          echo "🚀 5. 推送到 Ollama Hub..."
           ollama push $TARGET_REPO
 
-          echo "🧹 5. 清理临时缓存..."
-          rm -f model.gguf Modelfile
+          echo "🧹 6. 清理配置文件..."
+          rm -f Modelfile
