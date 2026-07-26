@@ -72,8 +72,8 @@ jobs:
 
           HF_REPO="QuantFactory/Llama-3.2-3B-Instruct-abliterated-GGUF"
 
-          QUANT_TAG="Q4_0"
-          MY_TAG="Llama-3.2-3B-Instruct-abliterated:Q4_0"
+          QUANT_TAG="Q4_1"
+          MY_TAG="Llama-3.2-3B-Instruct-abliterated:Q4_1"
 
           # -----------------------------------------------------------------
           # 🚀 下面是自动化执行流程(无需修改任何代码)
