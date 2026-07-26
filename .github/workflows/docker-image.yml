@@ -110,8 +110,8 @@ jobs:
           # -----------------------------------------------------------------
 
           HF_REPO="DavidAU/Llama-3.2-4X3B-MOE-Hell-California-Uncensored-10B-GGUF"
-          QUANT_TAG="Q4_0_4_4"
-          MY_TAG="Llama-3.2-4X3B-MOE-Hell-California-10B-D_AU:Q4_0_4_4"
+          QUANT_TAG="Q4_0_4_8"
+          MY_TAG="Llama-3.2-4X3B-MOE-Hell-California-10B-D_AU:Q4_0_4_8"
 
           # -----------------------------------------------------------------
           # 🚀 下面是自动化执行流程(无需修改任何代码)
