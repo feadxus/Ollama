@@ -72,8 +72,8 @@ jobs:
 
           HF_REPO="mradermacher/Llama3.2-24B-A3B-II-Dark-Champion-INSTRUCT-Heretic-Abliterated-Uncensored-GGUF"
 
-          QUANT_TAG="Q6_K"
-          MY_TAG="Llama3.2-24B-A3B-II-Dark-Champion-INSTRUCT-Heretic-Abliterated-Uncensored:Q6_K"
+          QUANT_TAG="Q8_0"
+          MY_TAG="Llama3.2-24B-A3B-II-Dark-Champion-INSTRUCT-Heretic-Abliterated-Uncensored:Q8_0"
           # -----------------------------------------------------------------
           # 🚀 下面是自动化执行流程(无需修改任何代码)
           # -----------------------------------------------------------------
