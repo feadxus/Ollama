@@ -12,13 +12,13 @@ jobs:
     # 🐧 Linux 系列
     #################################################
     # 🐧 Ubuntu 最新版（会随 GitHub 更新）
-    # runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
 
     # 🐧 Ubuntu 24.04 (推荐新项目)
-    # runs-on: ubuntu-24.04
+    #runs-on: ubuntu-24.04
 
     # 🐧 Ubuntu 22.04
-    # runs-on: ubuntu-22.04
+    #runs-on: ubuntu-22.04
 
     #################################################
     # 🍎 macOS 系列
@@ -36,13 +36,13 @@ jobs:
     # 🪟 Windows 系列
     #################################################
     # 🪟 Windows Server 2025
-    runs-on: windows-2025
+    #runs-on: windows-2025
 
     # 🪟 Windows Server 2022
-    runs-on: windows-2022
+    #runs-on: windows-2022
 
     # 🪟 Windows 最新
-    runs-on: windows-latest
+    #runs-on: windows-latest
 
     #################################################
     steps:
