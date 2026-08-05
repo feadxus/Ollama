@@ -1,96 +1,178 @@
-name: Download Model and Upload to Cloud Storage
+name: 🤖 Ollama Model Download Test Upload
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+env:
+  MODEL_NAME: "hf.co/MaziyarPanahi/Llama-3.2-3B-Instruct-uncensored-GGUF:Q8_0"
+  # feadxus/Llama3.2-24B-A3B-II-Dark-Champion-INSTRUCT-Heretic-Abliterated-Uncensored:Q4_K_S
 
 jobs:
-  download-and-upload:
-    runs-on: ubuntu-latest
+  ollama-test:
+    #################################################
+    # 🐧 Linux 系列
+    #################################################
+    # 🐧 Ubuntu 最新版（会随 GitHub 更新）
+    # runs-on: ubuntu-latest
+
+    # 🐧 Ubuntu 24.04 (推荐新项目)
+    # runs-on: ubuntu-24.04
+
+    # 🐧 Ubuntu 22.04
+    # runs-on: ubuntu-22.04
+
+    #################################################
+    # 🍎 macOS 系列
+    #################################################
+    # 🍎 Intel Mac
+    #runs-on: macos-13
+
+    # 🍎 Apple Silicon M 系列
+    runs-on: macos-14
+
+    # 🍎 Apple Silicon M 系列（更新版本）
+    #runs-on: macos-15
+
+    #################################################
+    # 🪟 Windows 系列
+    #################################################
+    # 🪟 Windows Server 2025
+    runs-on: windows-2025
+
+    # 🪟 Windows Server 2022
+    runs-on: windows-2022
+
+    # 🪟 Windows 最新
+    runs-on: windows-latest
+
+    #################################################
     steps:
-      # 0️⃣. 登陆 Hugging Face
-      - name: Login to Hugging Face via CLI
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: |
-          pip install -U huggingface_hub
-          hf auth login --token "$HF_TOKEN"
+    - name: 1️⃣ 🔍 检查运行硬件
+      run: |
+        echo "===== 系统架构 ====="
+        ARCH=$(uname -m)
+        echo "当前架构: $ARCH"
+        echo ""
+        echo "===== 判断结果 ====="
 
-      # 1️⃣. 安装 Ollama
-      - name: Install Ollama
-        run: |
-          echo "📥 安装 Ollama..."
-          curl -fsSL https://ollama.com/install.sh | sh
+        if [ "$ARCH" = "arm64" ]; then
+          echo "🍎 检测到 ARM64 架构"
+          echo "✅ 可能是 Apple Silicon (M1/M2/M3/M4)"
+        elif [ "$ARCH" = "x86_64" ]; then
+          echo "💻 检测到 x86_64 架构"
+          echo "⚠️ 当前不是 Apple Silicon"
+        else
+          echo "❓ 未知架构: $ARCH"
+        fi
 
-      # 2️⃣. 🔑 注入密钥 (让 Actions 拿到账号的推送权限)
-      - name: Inject Ollama Keys
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.OLLAMA_PRIVATE_KEY }}
-          SSH_PUBLIC_KEY: ${{ secrets.OLLAMA_PUBLIC_KEY }}
-        run: |
-          echo "🔑 正在写入 Ollama 身份密钥..."
-          
-          # 1. 写入用户主目录
-          mkdir -p $HOME/.ollama
-          echo "$SSH_PRIVATE_KEY" > $HOME/.ollama/id_ed25519
-          echo "$SSH_PUBLIC_KEY" > $HOME/.ollama/id_ed25519.pub
-          chmod 600 $HOME/.ollama/id_ed25519
-          chmod 644 $HOME/.ollama/id_ed25519.pub
+        echo ""
+        echo "===== 硬件详细信息 ====="
+        if command -v system_profiler >/dev/null 2>&1
+        then
+          system_profiler SPHardwareDataType
+        else
+          echo "当前系统不是 macOS,跳过 Apple 硬件检测"
 
-          # 2. 同步写入后台 service 目录(防止部分系统环境中 ollama serve 读不到)
-          sudo mkdir -p /usr/share/ollama/.ollama
-          sudo cp -r $HOME/.ollama/* /usr/share/ollama/.ollama/
-          sudo chmod 600 /usr/share/ollama/.ollama/id_ed25519
-          sudo chmod 644 /usr/share/ollama/.ollama/id_ed25519.pub
+        fi
 
-      # 3️⃣. 启动 Ollama 后台服务
-      - name: Start Ollama Service
-        run: |
-          echo "🚀 在后台启动 Ollama 服务..."
-          nohup ollama serve > ollama.log 2>&1 &
+    - name: 2️⃣ 🧗 登陆 Hugging Face
+      env:
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      run: |
+        pip install -U huggingface_hub
+        hf auth login --token "$HF_TOKEN"
 
-          echo "⏳ 等待 Ollama 后台服务就绪..."
-          for i in {1..30}; do
-            if curl -s http://127.0.0.1:11434/api/tags > /dev/null; then
-              echo "✅ Ollama 服务已成功运行!"
+    - name: 3️⃣ 🐑 安装 Ollama
+      run: |
+        echo "📥 Installing Ollama..."
+        curl -fsSL https://ollama.com/install.sh | sh
+        echo "🚀 Starting Ollama..."
+        nohup ollama serve > ollama.log 2>&1 &
+        echo "⏳ Waiting Ollama..."
+        for i in {1..60}
+        do
+          if curl -s http://127.0.0.1:11434/api/tags >/dev/null
+          then
+              echo "✅ Ollama Ready"
               break
-            fi
-            echo "正在重试 ($i/30)..."
-            sleep 1
-          done
+          fi
+          echo "Waiting $i..."
+          sleep 1
+        done
 
-      # 4️⃣. 零磁盘占用!让 Ollama 直连 HF 构建并推送到个人 Hub
-      - name: Build and Push directly via Ollama
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: |
-          # 👤 你的 Ollama Hub 用户名
-          USERNAME="feadxus"
+    - name: 4️⃣ 📦 Pull Model
+      run: |
+        echo "Downloading:"
+        echo $MODEL_NAME
+        ollama pull $MODEL_NAME
 
-          # -----------------------------------------------------------------
+    - name: 5️⃣ 🧠 AI能力测试
+      run: |
+        mkdir -p results
+        cat > questions.txt <<EOF
+        问题1:
+        请解释 Docker 的 network_mode host 和 bridge 区别.
+        问题2:
+        Home Assistant 使用 MQTT 通讯的工作流程是什么?
+        问题3:
+        写一个 docker-compose 部署 Mosquitto MQTT 服务.
+        问题4:
+        Python asyncio 和多线程有什么区别?
+        问题5:
+        如果一个 Linux 服务启动失败,应该如何排查?
+        EOF
+        echo "开始AI测试..."
+        ollama run $MODEL_NAME \
+        < questions.txt \
+        > results/answer.txt
+        echo "========测试结果========"
+        cat results/answer.txt
 
-          HF_REPO="BlackStone-Yu/Z-Image-Turbo-GGUF"
-          QUANT_TAG="bf16"
-          MY_TAG="z_image_turbo:bf16"
+    - name: 6️⃣ 📤 保存测试结果
+      uses: actions/upload-artifact@v4
+      with:
+        name: ollama-test-result
+        path:
+          results/answer.txt
 
-          # -----------------------------------------------------------------
-          # 🚀 下面是自动化执行流程(无需修改任何代码)
-          # -----------------------------------------------------------------
-          TARGET_REPO="${USERNAME}/${MY_TAG}"
+    - name: 7️⃣ 📦 打包模型
+      run: |
+        echo "Searching model directory..."
 
-          echo "📄 生成指向 Hugging Face 的直连 Modelfile..."
-          # 利用 Ollama 语法:FROM huggingface.co/仓库名:量化Tag
-          echo "FROM huggingface.co/${HF_REPO}:${QUANT_TAG}" > Modelfile
+        MODEL_DIR=$(find / -path "*ollama/models" \
+        -type d 2>/dev/null | head -1)
 
-          echo "🔨 让 Ollama 边下载边直接打包(零暂存文件,大幅省磁盘!)..."
-          ollama create $TARGET_REPO -f Modelfile
+        echo "Found:"
+        echo $MODEL_DIR
 
-          echo "🔍 检查本地模型列表..."
-          ollama list
+        tar -czvf ollama-model.tar.gz \
+        -C $MODEL_DIR \
+        models
 
-          echo "🚀 推送到个人 Ollama Hub..."
-          ollama push $TARGET_REPO
+        ls -lh ollama-model.tar.gz
 
-          echo "🧹 清理 Modelfile 配置文件..."
-          rm -f Modelfile
+    - name: 8️⃣ ☁️ 安装 rclone
+      run: |
+        curl https://rclone.org/install.sh | sudo bash
+
+    - name: 9️⃣ 🔑 配置Google Drive
+      env:
+        DRIVE_CONFIG:
+          ${{ secrets.GOOGLE_FEADXUS_DRIVE }}
+      run: |
+        mkdir -p ~/.config/rclone
+        echo "$DRIVE_CONFIG" \
+        > ~/.config/rclone/rclone.conf
+
+    - name: 🔟 🚀 上传
+      run: |
+        rclone copy \
+        ollama-model.tar.gz \
+        feadxus-Google-Drive:Models/ \
+        --progress
+
+        rclone copy \
+        results \
+        feadxus-Google-Drive:Models/TestResults/ \
+        --progress
+
+        echo "🎉 全部完成"
