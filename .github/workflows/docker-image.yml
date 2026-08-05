@@ -131,8 +131,7 @@ jobs:
         如果一个 Linux 服务启动失败,应该如何排查?
         EOF
         echo "开始AI测试..."
-        OLLAMA_NOPRINT=1 \
-        ollama run $MODEL_NAME \
+        ollama run $MODEL_NAME --format json \
         < questions.txt \
         > results/answer.txt
         echo "========测试结果========"
