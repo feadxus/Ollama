@@ -157,16 +157,11 @@ jobs:
         echo "$DRIVE_CONFIG" \
         > ~/.config/rclone/rclone.conf
 
-    - name: 🔟 🚀 上传
+    - name: 🔟 🚀 上传测试结果到Google Drive
       run: |
-        rclone copy \
-        ollama-model.tar.gz \
-        feadxus-Google-Drive:Models/ \
-        --progress
-
+        echo "上传AI测试结果..."
         rclone copy \
         results \
         feadxus-Google-Drive:Models/TestResults/ \
         --progress
-
-        echo "🎉 全部完成"
+        echo "🎉 测试结果上传完成"
