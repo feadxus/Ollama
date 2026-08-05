@@ -26,7 +26,10 @@ jobs:
     #runs-on: macos-13
 
     # 🍎 Apple Silicon M 系列
-    runs-on: macos-14
+    #runs-on: macos-14
+
+    # 🍎 Apple Silicon M 系列
+    runs-on: macos-14-xlarge
 
     # 🍎 Apple Silicon M 系列（更新版本）
     #runs-on: macos-15
