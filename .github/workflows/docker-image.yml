@@ -109,7 +109,7 @@ jobs:
           sleep 1
         done
 
-    - name: 5️⃣ 📦 Pull Model
+    - name: 5️⃣ 📦 从 ollama 拉取模型
       run: |
         echo "Downloading:"
         echo $MODEL_NAME
@@ -144,27 +144,11 @@ jobs:
         path:
           results/answer.txt
 
-    - name: 8️⃣ 📦 打包模型
-      run: |
-        echo "Searching model directory..."
-
-        MODEL_DIR=$(find / -path "*ollama/models" \
-        -type d 2>/dev/null | head -1)
-
-        echo "Found:"
-        echo $MODEL_DIR
-
-        tar -czvf ollama-model.tar.gz \
-        -C $MODEL_DIR \
-        models
-
-        ls -lh ollama-model.tar.gz
-
-    - name: 9️⃣ ☁️ 安装 rclone
+    - name: 8️⃣ ☁️ 安装 rclone
       run: |
         curl https://rclone.org/install.sh | sudo bash
 
-    - name: 🔟 🔑 配置Google Drive
+    - name: 9️⃣ 🔑 配置Google Drive
       env:
         DRIVE_CONFIG:
           ${{ secrets.GOOGLE_FEADXUS_DRIVE }}
@@ -173,7 +157,7 @@ jobs:
         echo "$DRIVE_CONFIG" \
         > ~/.config/rclone/rclone.conf
 
-    - name: 1️⃣1️⃣ 🚀 上传
+    - name: 🔟 🚀 上传
       run: |
         rclone copy \
         ollama-model.tar.gz \
