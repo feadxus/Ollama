@@ -81,31 +81,41 @@ jobs:
         pip install -U huggingface_hub
         hf auth login --token "$HF_TOKEN"
 
-    - name: 3️⃣ 🐑 安装 Ollama
+    - name: 3️⃣ 🐑 macOS M 系列安装 Ollama
       run: |
-        echo "📥 Installing Ollama..."
-        curl -fsSL https://ollama.com/install.sh | sh
-        echo "🚀 Starting Ollama..."
-        nohup ollama serve > ollama.log 2>&1 &
-        echo "⏳ Waiting Ollama..."
+        echo "📥 Download Ollama..."
+        curl -L https://ollama.com/download/Ollama-darwin.zip \
+        -o ollama.zip
+        unzip -q ollama.zip
+        sudo mv Ollama.app /Applications/
+        echo "🔧 Add ollama binary"
+        sudo ln -sf /Applications/Ollama.app/Contents/Resources/ollama \
+        /usr/local/bin/ollama
+        ollama --version
+
+    - name: 4️⃣ 🚀 启动 Ollama Server
+      run: |
+        echo "Starting Ollama..."
+        nohup ollama serve \
+        > ollama.log 2>&1 &
+        echo "Waiting..."
         for i in {1..60}
         do
           if curl -s http://127.0.0.1:11434/api/tags >/dev/null
           then
-              echo "✅ Ollama Ready"
-              break
+            echo "✅ Ollama Ready"
+            break
           fi
-          echo "Waiting $i..."
           sleep 1
         done
 
-    - name: 4️⃣ 📦 Pull Model
+    - name: 5️⃣ 📦 Pull Model
       run: |
         echo "Downloading:"
         echo $MODEL_NAME
         ollama pull $MODEL_NAME
 
-    - name: 5️⃣ 🧠 AI能力测试
+    - name: 6️⃣ 🧠 AI能力测试
       run: |
         mkdir -p results
         cat > questions.txt <<EOF
@@ -127,14 +137,14 @@ jobs:
         echo "========测试结果========"
         cat results/answer.txt
 
-    - name: 6️⃣ 📤 保存测试结果
+    - name: 7️⃣ 📤 保存测试结果
       uses: actions/upload-artifact@v4
       with:
         name: ollama-test-result
         path:
           results/answer.txt
 
-    - name: 7️⃣ 📦 打包模型
+    - name: 8️⃣ 📦 打包模型
       run: |
         echo "Searching model directory..."
 
@@ -150,11 +160,11 @@ jobs:
 
         ls -lh ollama-model.tar.gz
 
-    - name: 8️⃣ ☁️ 安装 rclone
+    - name: 9️⃣ ☁️ 安装 rclone
       run: |
         curl https://rclone.org/install.sh | sudo bash
 
-    - name: 9️⃣ 🔑 配置Google Drive
+    - name: 🔟 🔑 配置Google Drive
       env:
         DRIVE_CONFIG:
           ${{ secrets.GOOGLE_FEADXUS_DRIVE }}
@@ -163,7 +173,7 @@ jobs:
         echo "$DRIVE_CONFIG" \
         > ~/.config/rclone/rclone.conf
 
-    - name: 🔟 🚀 上传
+    - name: 1️⃣1️⃣ 🚀 上传
       run: |
         rclone copy \
         ollama-model.tar.gz \
